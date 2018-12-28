@@ -1,0 +1,61 @@
+on init
+    # Load persistent dm-verity state
+    verity_load_state
+
+on early-boot
+    # Update dm-verity state and set partition.*.verified properties
+    verity_update_state
+
+on verity-logging
+	exec u:r:slideshow:s0 -- /sbin/slideshow warning/verity_red_1 warning/verity_red_2
+
+
+on boot
+    chown system system /sys/kernel/autohotplug/enable
+    chmod 0660 /sys/kernel/autohotplug/enable
+
+    chown system system /sys/kernel/autohotplug/boost_all
+    chmod 0660 /sys/kernel/autohotplug/boost_all
+
+    chown system system /sys/devices/system/cpu/cpu0/cpufreq/boot_lock
+    chmod 0660 /sys/devices/system/cpu/cpu0/cpufreq/boot_lock
+
+    chown system system /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+    chmod 0660 /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+    chown system system /sys/devices/platform/soc/cpu_budget_cool/roomage
+    chmod 0660 /sys/devices/platform/soc/cpu_budget_cool/roomage
+    write /sys/devices/platform/soc/cpu_budget_cool/roomage "1488000 4 0 0 1488000 4 0 0"
+
+    chown system system /sys/devices/platform/gpu/scenectrl/command
+    chmod 0660 /sys/devices/platform/gpu/scenectrl/command
+
+    chown system system /sys/class/thermal/thermal_zone0/emul_temp
+    chmod 0660 /sys/class/thermal/thermal_zone0/emul_temp
+
+    chown system system /proc/sunxi_ir_protocol
+    chmod 0777 /proc/sunxi_ir_protocol
+
+    write /sys/class/disp/disp/attr/runtime_enable 1
+    write /sys/kernel/autohotplug/enable 1
+    write /sys/kernel/autohotplug/boost_all 0
+
+    # Read one page at a time for swap (default is 8)
+    write /proc/sys/vm/page-cluster 0
+
+# usb camera
+    insmod /vendor/modules/videobuf2-core.ko
+    insmod /vendor/modules/videobuf2-memops.ko
+    insmod /vendor/modules/videobuf2-vmalloc.ko
+    insmod /vendor/modules/videobuf2-v4l2.ko
+    insmod /vendor/modules/uvcvideo.ko
+
+on late-fs
+#    insmod /vendor/modules/videobuf2-core.ko
+#    insmod /vendor/modules/videobuf2-memops.ko
+#    insmod /vendor/modules/videobuf2-dma-contig.ko
+#    insmod /vendor/modules/videobuf2-v4l2.ko
+#    insmod /vendor/modules/vin_io.ko
+#    insmod /vendor/modules/gc2355_mipi.ko
+#    insmod /vendor/modules/gc0310_mipi.ko
+#    insmod /vendor/modules/vin_v4l2.ko
+     insmod /system/vendor/modules/sunxi-ir-rx.ko

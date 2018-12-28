@@ -1,0 +1,4 @@
+on boot
+    # MAC Program
+    setprop vendor.customized.mac ${ro.boot.mac}
+    setprop vendor.wifi.use_customized_macaddr 1
