@@ -9,7 +9,6 @@ PRODUCT_PACKAGES += \
     Music \
     Provision \
     WallpaperCropper \
-    GalleryTv \
     Camera2
 
 # for PPPoE
@@ -88,7 +87,7 @@ PRODUCT_SYSTEM_SERVER_JARS += \
 PRODUCT_PROPERTY_OVERRIDES += \
     persist.sys.media.avsync=true
 
-RODUCT_PACKAGES += LiveTv
+PRODUCT_PACKAGES += TvQuickSettings
 
 $(call inherit-product, device/softwinner/petrel-p1/media/sounds/AudioPackage.mk)
 $(call inherit-product-if-exists, frameworks/base/data/sounds/AudioTv.mk)

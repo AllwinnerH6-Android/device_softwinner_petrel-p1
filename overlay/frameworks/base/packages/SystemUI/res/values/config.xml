@@ -21,6 +21,6 @@
     <string name="config_statusBarComponent" translatable="false">com.android.systemui.statusbar.tv.TvStatusBar</string>
 
     <!-- Disable KeyguardSerivce -->
-    <bool name="config_enableKeyguardService">true</bool>
+    <bool name="config_enableKeyguardService">false</bool>
 
 </resources>

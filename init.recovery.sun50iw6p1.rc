@@ -10,3 +10,8 @@ service console /sbin/sh
     disabled
     user shell
     group log
+
+on property:sys.uboot_params_clear=1
+    ubootparam disp_rsl "0"
+    ubootparam tv_vdid "0"
+    ubootparam disp_config "0"

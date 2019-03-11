@@ -1,0 +1,4 @@
+<devices>
+    <!--exclude sunxi-ir,if use multi-ir -->
+    <device name="sunxi-ir" />
+</devices>

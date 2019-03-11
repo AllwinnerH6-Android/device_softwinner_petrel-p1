@@ -47,6 +47,7 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     TelephonyProvider \
     rild \
+    DocumentsUI \
 
 ############################### 3G Dongle Support ###############################
 # Radio Packages and Configuration Flie
@@ -75,6 +76,9 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.software.pppoe.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.pppoe.xml \
 
 PRODUCT_COPY_FILES += \
+	device/softwinner/petrel-p1/configs/excluded-input-devices.xml:system/etc/excluded-input-devices.xml \
+
+PRODUCT_COPY_FILES += \
 	device/softwinner/petrel-p1/configs/sunxi-keyboard.kl:system/usr/keylayout/sunxi-keyboard.kl \
 
 PRODUCT_COPY_FILES += \
@@ -100,6 +104,8 @@ PRODUCT_PROPERTY_OVERRIDES += \
     ro.frp.pst=/dev/block/by-name/frp
 
 ifneq (,$(filter userdebug eng,$(TARGET_BUILD_VARIANT)))
+PRODUCT_DEBUG := true
+
 PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
     persist.sys.usb.config=mtp,adb \
     ro.adb.secure=0
@@ -110,7 +116,7 @@ PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
 endif
 
 PRODUCT_PROPERTY_OVERRIDES += \
-    ro.sf.lcd_density=320
+    ro.sf.lcd_density=213
 
 # limit dex2oat threads to improve thermals
 PRODUCT_PROPERTY_OVERRIDES += \
@@ -140,11 +146,30 @@ PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
 PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
     persist.display.smart_backlight=1 \
     persist.display.enhance_mode=0 \
+    persist.display.policy=2 \
+    persist.disp.device_config.hdmi \
+    persist.disp.margin.hdmi \
+    persist.disp.dataspace.hdmi \
+    persist.disp.pixelformat.hdmi \
+    persist.disp.aspectratio.hdmi \
+    persist.disp.device_config.cvbs \
+    persist.disp.margin.cvbs \
+    persist.disp.dataspace.cvbs \
+    persist.disp.pixelformat.cvbs \
+    persist.disp.aspectratio.cvbs
+
+# miracast
+PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
+    wfdsink.use.local_player=true
+
+#disable rotation
+PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
+	ro.sf.disablerotation = 1
 
 #booevent true=enable bootevent,false=disable bootevent
 PRODUCT_SYSTEM_DEFAULT_PROPERTIES += persist.sys.bootevent=true
 
-PRODUCT_CHARACTERISTICS := tablet
+PRODUCT_CHARACTERISTICS := tv
 
 PRODUCT_AAPT_CONFIG := tvdpi xlarge hdpi xhdpi large
 PRODUCT_AAPT_PREF_CONFIG := tvdpi

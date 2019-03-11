@@ -91,8 +91,8 @@ ifeq ($(BOARD_WIFI_VENDOR), realtek)
     BOARD_HOSTAPD_PRIVATE_LIB   := lib_driver_cmd_rtl
     include hardware/realtek/wlan/config/config.mk
     BOARD_WLAN_DEVICE           := realtek
-    WIFI_DRIVER_MODULE_NAME     := "8723cs"
-    WIFI_DRIVER_MODULE_PATH     := "/vendor/modules/8723cs.ko"
+    WIFI_DRIVER_MODULE_NAME     := "88x2bs"
+    WIFI_DRIVER_MODULE_PATH     := "/vendor/modules/88x2bs.ko"
     WIFI_DRIVER_MODULE_ARG      := "ifname=wlan0 if2name=p2p0"
 endif
 
@@ -130,5 +130,29 @@ endif
 
 ifeq ($(TARGET_PLATFORM),homlet)
     PRODUCT_BOOT_JARS += softwinner.audio
+endif
+
+# 2. Bluetooth Configuration
+# make sure BOARD_HAVE_BLUETOOTH is true for every bt vendor
+
+#BOARD_BLUETOOTH_VENDOR := realtek
+
+# 2.1 broadcom bt configuration
+# BOARD_HAVE_BLUETOOTH_NAME: ap6210/ap6212/ap6330/ap6335
+ifeq ($(BOARD_BLUETOOTH_VENDOR), broadcom)
+    BOARD_HAVE_BLUETOOTH := true
+    BOARD_HAVE_BLUETOOTH_BCM := true
+    BOARD_HAVE_BLUETOOTH_NAME := ap6255
+    BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := $(TOP_DIR)device/softwinner/$(basename $(TARGET_DEVICE))/configs/bluetooth/
+endif
+
+# 2.2 realtek bt configuration
+ifeq ($(BOARD_BLUETOOTH_VENDOR), realtek)
+    BOARD_HAVE_BLUETOOTH := true
+    BOARD_HAVE_BLUETOOTH_RTK := true
+    BOARD_HAVE_BLUETOOTH_RTK_COEX := true
+    BOARD_HAVE_BLUETOOTH_NAME := rtl8822bs
+    BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := $(TOP_DIR)device/softwinner/$(basename $(TARGET_DEVICE))/configs/bluetooth/
+    include hardware/realtek/bluetooth/firmware/rtlbtfw_cfg.mk
 endif
 

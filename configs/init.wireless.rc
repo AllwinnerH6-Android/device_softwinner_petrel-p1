@@ -1,4 +1,5 @@
 on boot
-    # MAC Program
-    setprop vendor.customized.mac ${ro.boot.mac}
-    setprop vendor.wifi.use_customized_macaddr 1
+    # Bluetooth
+    # UART device
+    chmod 0660 /dev/ttyS1
+    chown bluetooth net_bt_admin /dev/ttyS1
