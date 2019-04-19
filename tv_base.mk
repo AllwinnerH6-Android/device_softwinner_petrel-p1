@@ -8,8 +8,7 @@ PRODUCT_PACKAGES += \
     LatinIME \
     Music \
     Provision \
-    WallpaperCropper \
-    Camera2
+    WallpaperCropper
 
 # for PPPoE
 PRODUCT_PACKAGES += \

@@ -67,6 +67,17 @@ TARGET_USES_MKE2FS := true
 
 BOARD_WIFI_VENDOR := xradio
 
+# 1.0 common configuration
+ifeq ($(BOARD_WIFI_VENDOR), common)
+    BOARD_WPA_SUPPLICANT_DRIVER := NL80211
+    BOARD_HOSTAPD_DRIVER        := NL80211
+    WPA_SUPPLICANT_VERSION      := VER_0_8_X
+    BOARD_HOSTAPD_PRIVATE_LIB   := lib_driver_cmd_common
+    BOARD_WPA_SUPPLICANT_PRIVATE_LIB := lib_driver_cmd_common
+    BOARD_WLAN_DEVICE           := common
+    include hardware/aw/wlan/firmware/firmware.mk
+endif
+
 # 1.1 broadcom wifi configuration
 # BOARD_USR_WIFI: ap6181/ap6210/ap6212/ap6330/ap6335
 ifeq ($(BOARD_WIFI_VENDOR), broadcom)

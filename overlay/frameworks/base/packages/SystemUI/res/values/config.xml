@@ -23,4 +23,7 @@
     <!-- Disable KeyguardSerivce -->
     <bool name="config_enableKeyguardService">false</bool>
 
+    <!-- homlet should use LEANBACK in Pip -->
+    <bool name="config_leanback_feature">true</bool>
+
 </resources>
