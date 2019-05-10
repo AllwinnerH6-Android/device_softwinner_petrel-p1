@@ -44,6 +44,25 @@ PRODUCT_PACKAGES += \
 	slideshow \
 	verity_warning_images
 
+# Load BOARD_BLUETOOTH_VENDOR Settings from BoardConfig.mk
+$(eval $(shell grep "^\s*BOARD_BLUETOOTH_VENDOR\s*:*=" device/softwinner/petrel-p1/BoardConfig.mk))
+
+# common vendor will build all vendor's libbt-vendor
+ifeq ($(BOARD_BLUETOOTH_VENDOR),common)
+PRODUCT_PACKAGES += \
+	wireless_hwinfo \
+	libbt-xradio \
+	libbt-broadcom \
+	libbt-realtek
+endif
+
+# Copy permission files only for supported vendor
+ifneq (,$(findstring $(BOARD_BLUETOOTH_VENDOR),broadcom realtek xradio common))
+PRODUCT_COPY_FILES += \
+	frameworks/native/data/etc/android.hardware.bluetooth.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.bluetooth.xml \
+	frameworks/native/data/etc/android.hardware.bluetooth_le.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.bluetooth_le.xml
+endif
+
 PRODUCT_PACKAGES += \
     TelephonyProvider \
     rild \

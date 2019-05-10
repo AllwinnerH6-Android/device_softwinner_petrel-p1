@@ -65,7 +65,7 @@ TARGET_USES_MKE2FS := true
 # wifi and bt configuration
 # 1. Wifi Configuration
 
-BOARD_WIFI_VENDOR := xradio
+BOARD_WIFI_VENDOR := common
 
 # 1.0 common configuration
 ifeq ($(BOARD_WIFI_VENDOR), common)
@@ -75,7 +75,7 @@ ifeq ($(BOARD_WIFI_VENDOR), common)
     BOARD_HOSTAPD_PRIVATE_LIB   := lib_driver_cmd_common
     BOARD_WPA_SUPPLICANT_PRIVATE_LIB := lib_driver_cmd_common
     BOARD_WLAN_DEVICE           := common
-    include hardware/aw/wlan/firmware/firmware.mk
+    include hardware/aw/wireless/wlan/firmware/firmware.mk
 endif
 
 # 1.1 broadcom wifi configuration
@@ -146,7 +146,16 @@ endif
 # 2. Bluetooth Configuration
 # make sure BOARD_HAVE_BLUETOOTH is true for every bt vendor
 
-#BOARD_BLUETOOTH_VENDOR := realtek
+BOARD_BLUETOOTH_VENDOR := common
+
+# 2.0 common configuration
+ifeq ($(BOARD_BLUETOOTH_VENDOR), common)
+    BOARD_HAVE_BLUETOOTH := true
+    BOARD_HAVE_BLUETOOTH_COMMON := true
+    BOARD_HAVE_BLUETOOTH_RTK_COEX := true
+    BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := $(TOP_DIR)device/softwinner/$(basename $(TARGET_DEVICE))/configs/bluetooth/
+    include hardware/aw/wireless/bluetooth/firmware/firmware.mk
+endif
 
 # 2.1 broadcom bt configuration
 # BOARD_HAVE_BLUETOOTH_NAME: ap6210/ap6212/ap6330/ap6335
