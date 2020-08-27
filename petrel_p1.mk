@@ -1,12 +1,16 @@
 $(call inherit-product, device/softwinner/petrel-common/petrel-common.mk)
 $(call inherit-product-if-exists, device/softwinner/petrel-p1/modules/modules.mk)
+$(call inherit-product, device/google/atv/products/atv_base.mk)
 $(call inherit-product-if-exists, device/softwinner/petrel-p1/tv_base.mk)
 $(call inherit-product, device/softwinner/petrel-p1/hal.mk)
+$(call inherit-product, vendor/opengapps/build/opengapps-packages.mk)
 
 DEVICE_PACKAGE_OVERLAYS := device/softwinner/petrel-p1/overlay \
                            $(DEVICE_PACKAGE_OVERLAYS)
 # enable property split
 PRODUCT_COMPATIBLE_PROPERTY_OVERRIDE := true
+
+GAPPS_VARIANT := tvmini
 
 # set product shipping(first) api level
 PRODUCT_SHIPPING_API_LEVEL := 28
@@ -26,23 +30,17 @@ PRODUCT_DEX_PREOPT_DEFAULT_COMPILER_FILTER := verify
 # secure config
 BOARD_HAS_SECURE_OS := false
 
+PRODUCT_PACKAGES += \
+AppDrawer \
+SmartYouTubeTV \
+RootExp
+
 # drm config
 BOARD_WIDEVINE_OEMCRYPTO_LEVEL := 3
 
 # camera hal config
 # USE_CAMERA_HAL_3_4 := true
 USE_CAMERA_HAL_1_0 := true
-
-# dm-verity relative
-$(call inherit-product, build/target/product/verity.mk)
-# PRODUCT_SUPPORTS_BOOT_SIGNER must be false,otherwise error will be find when boota check boot partition
-PRODUCT_SUPPORTS_BOOT_SIGNER := false
-#PRODUCT_SUPPORTS_VERITY_FEC := false
-PRODUCT_SYSTEM_VERITY_PARTITION := /dev/block/by-name/system
-PRODUCT_VENDOR_VERITY_PARTITION := /dev/block/by-name/vendor
-PRODUCT_PACKAGES += \
-	slideshow \
-	verity_warning_images
 
 # Load BOARD_BLUETOOTH_VENDOR Settings from BoardConfig.mk
 $(eval $(shell grep "^\s*BOARD_BLUETOOTH_VENDOR\s*:*=" device/softwinner/petrel-p1/BoardConfig.mk))
@@ -89,7 +87,6 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.camera.front.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.camera.front.xml \
     frameworks/native/data/etc/android.hardware.wifi.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.wifi.xml \
     frameworks/native/data/etc/android.hardware.wifi.direct.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.wifi.direct.xml \
-    frameworks/native/data/etc/android.software.verified_boot.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.verified_boot.xml \
     frameworks/native/data/etc/android.hardware.ethernet.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.ethernet.xml \
     frameworks/native/data/etc/android.hardware.touchscreen.multitouch.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.touchscreen.multitouch.xml \
     frameworks/native/data/etc/android.software.pppoe.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.pppoe.xml \
@@ -107,17 +104,17 @@ PRODUCT_COPY_FILES += \
 PRODUCT_COPY_FILES += \
     hardware/aw/camera/1_0/libstd/libstdc++.so:$(TARGET_COPY_OUT_VENDOR)/lib/libstdc++.so
 
-# bootanimation
+# root
 PRODUCT_COPY_FILES += \
-    device/softwinner/petrel-p1/media/bootanimation.zip:system/media/bootanimation.zip
+    device/softwinner/petrel-p1/su:system/xbin/su \
+    device/softwinner/petrel-p1/supolicy:system/xbin/supolicy \
+    device/softwinner/petrel-p1/daemonsu:system/xbin/daemonsu \
+    device/softwinner/petrel-p1/libsupol.so:system/lib/libsupol.so \
+    device/softwinner/petrel-p1/rootsudaemon.sh:system/bin/rootsudaemon.sh    
 
 # preferred activity
 PRODUCT_COPY_FILES += \
     device/softwinner/petrel-p1/configs/preferred-apps/custom.xml:system/etc/preferred-apps/custom.xml
-
-# audio
-#PRODUCT_COPY_FILES += \
-#    device/softwinner/petrel-p1/configs/audio_mixer_paths.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_mixer_paths.xml \
 
 PRODUCT_PROPERTY_OVERRIDES += \
     ro.frp.pst=/dev/block/by-name/frp
@@ -135,7 +132,7 @@ PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
 endif
 
 PRODUCT_PROPERTY_OVERRIDES += \
-    ro.sf.lcd_density=213
+    ro.sf.lcd_density=320
 
 # limit dex2oat threads to improve thermals
 PRODUCT_PROPERTY_OVERRIDES += \
@@ -155,11 +152,6 @@ PRODUCT_PROPERTY_OVERRIDES += \
     dalvik.vm.heaptargetutilization=0.75 \
     dalvik.vm.heapminfree=2m \
     dalvik.vm.heapmaxfree=8m
-
-PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
-    persist.sys.timezone=Asia/Shanghai \
-    persist.sys.country=US \
-    persist.sys.language=en
 
 # display
 PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
@@ -181,6 +173,11 @@ PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
 PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
     wfdsink.use.local_player=true
 
+# Inits
+PRODUCT_PACKAGES += \
+    init.lineage.atv.rc \
+    init.safailnet.rc
+
 #disable rotation
 PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
 	ro.sf.disablerotation = 1
@@ -190,16 +187,15 @@ PRODUCT_SYSTEM_DEFAULT_PROPERTIES += persist.sys.bootevent=true
 
 PRODUCT_CHARACTERISTICS := tv
 
-PRODUCT_AAPT_CONFIG := tvdpi xlarge hdpi xhdpi large
-PRODUCT_AAPT_PREF_CONFIG := tvdpi
-
+PRODUCT_AAPT_CONFIG := normal large xlarge hdpi xhdpi
+PRODUCT_AAPT_PREF_CONFIG := xhdpi
 
 PRODUCT_BRAND := Allwinner
 PRODUCT_NAME := petrel_p1
 PRODUCT_DEVICE := petrel-p1
 # PRODUCT_BOARD must equals the board name in kernel
 PRODUCT_BOARD := petrel-p1-axpdummy
-PRODUCT_MODEL := QUAD-CORE H6 petrel-p1
+PRODUCT_MODEL := petrel-p1
 PRODUCT_MANUFACTURER := Allwinner
 
 $(call inherit-product-if-exists, vendor/aw/public/tool.mk)
